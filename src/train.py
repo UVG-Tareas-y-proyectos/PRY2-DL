@@ -161,10 +161,14 @@ def main(raw_path: str, output_path: str, sample_percent=10, epochs_ae=3, epochs
     threshold_transfer = best_f2_threshold(yv, prob_v)
     # Alpha and alert threshold use validation only; test remains untouched.
     best = (-1.0, 0.0, 0.5)
-    for alpha in (0.0, 0.1, 0.2, 0.3, 0.4, 0.5):
+    # Both stages must participate in the delivered system. A zero-weight
+    # ablation is reported separately as Stage B, not selected as a fusion.
+    fusion_candidates = []
+    for alpha in (0.05, 0.1, 0.2, 0.3, 0.4, 0.5):
         score = alpha * anomaly_v + (1 - alpha) * prob_v
         threshold = best_f2_threshold(yv, score)
         f2 = metrics(yv, score, threshold)["f2"]
+        fusion_candidates.append({"alpha": alpha, "validation_f2": f2})
         if f2 > best[0]:
             best = (f2, alpha, threshold)
     _, alpha, threshold_combo = best
@@ -178,6 +182,7 @@ def main(raw_path: str, output_path: str, sample_percent=10, epochs_ae=3, epochs
         "training": {"autoencoder_loss": ae_history, "transfer_loss": transfer_history,
                      "baseline_loss": baseline_history, "pos_weight": pos_weight},
         "selection": {"alpha": alpha, "metric": "F2 on validation",
+                      "fusion_candidates": fusion_candidates,
                       "validation_positive_rate": float(yv.mean())},
         "test_positive_rate": float(yt.mean()),
         "test": {
@@ -193,8 +198,9 @@ def main(raw_path: str, output_path: str, sample_percent=10, epochs_ae=3, epochs
         json.dump(results, file, ensure_ascii=False, indent=2)
     # Save all held-out windows for interactive lookup, capped to reduce deploy size.
     positives = [i for i, y in enumerate(yt) if y]
-    negatives = [i for i, y in enumerate(yt) if not y]
-    selected = positives + negatives[:1000]
+    negatives = np.flatnonzero(yt == 0)
+    ranked_negatives = negatives[np.argsort(combined_t[negatives])[::-1]]
+    selected = positives + ranked_negatives[:1000].tolist() + ranked_negatives[-100:].tolist()
     cases = []
     for i in selected:
         w = test_windows[i]

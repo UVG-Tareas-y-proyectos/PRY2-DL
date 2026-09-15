@@ -19,6 +19,10 @@ def code(text):
 
 md("""# Proyecto 2 · Detección de patrones transaccionales con dos etapas
 
+**Universidad del Valle de Guatemala · CC3092 Deep Learning**<br>
+Diego Patzan · 23525<br>
+Ihan Marroquin · 23108
+
 **Datos sintéticos, no remesas guatemaltecas.** Este notebook usa IBM AML HI-Small para
 construir secuencias por remitente. PaySim se descartó para la representación temporal:
 sus identificadores de origen casi nunca se repiten, por lo que un historial por remitente
@@ -51,6 +55,13 @@ if not DATA.exists():
     urllib.request.urlretrieve(url, DATA)
 print('CSV disponible:', DATA, 'bytes:', DATA.stat().st_size)
 """)
+code("""import importlib.util, subprocess
+needed = ('torch', 'sklearn', 'matplotlib', 'pandas')
+if any(importlib.util.find_spec(name) is None for name in needed):
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r',
+                           str(ROOT / 'requirements-train.txt')])
+print('Dependencias del experimento listas')
+""")
 md("""## 1. Ingeniería de secuencias y auditoría
 
 Se muestrea un 10 % de remitentes por hash estable, **antes** de leer sus ventanas; así no
@@ -80,7 +91,7 @@ fig, ax = plt.subplots(1, 2, figsize=(11, 3.5))
 ax[0].hist(lengths, bins=range(2,26), color='#217c87')
 ax[0].set(title='Longitud de secuencias', xlabel='Transacciones', ylabel='Ventanas')
 splits = window_audit['split_counts']
-ax[1].bar(splits, [splits[s]['positive']/splits[s]['total'] for s in splits], color='#ba5238')
+ax[1].bar(list(splits), [splits[s]['positive']/splits[s]['total'] for s in splits], color='#ba5238')
 ax[1].set(title='Proporción positiva por split', ylabel='Ventanas positivas / total')
 plt.tight_layout(); plt.show()
 """)
@@ -150,7 +161,7 @@ fn = [c for c in cases if c['label'] and not c['alert']]
 chosen = tp[:3] + (fp + fn)[:2]
 print('Casos disponibles: TP',len(tp),'FP',len(fp),'FN',len(fn))
 for c in chosen:
-    print('\n', 'TP' if c['label'] and c['alert'] else ('FP' if c['alert'] else 'FN'),
+    print('\\n', 'TP' if c['label'] and c['alert'] else ('FP' if c['alert'] else 'FN'),
           c['sender'], 'score',round(c['combined_score'],3))
     rank = np.argsort(np.asarray(c['attention']) + np.asarray(c['reconstruction_error']))[-3:][::-1]
     display(pd.DataFrame([dict(c['transactions'][i], position=int(i+1),

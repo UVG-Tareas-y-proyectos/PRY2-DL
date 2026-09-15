@@ -1,5 +1,8 @@
 # Proyecto 2 · Detección de patrones transaccionales
 
+Diego Patzan · 23525<br>
+Ihan Marroquin · 23108
+
 Sistema académico de dos etapas para revisar secuencias por remitente: un autoencoder
 GRU que aprende normalidad y un clasificador con atención que reutiliza el encoder.
 Incluye una ablación con la misma arquitectura supervisada entrenada desde cero,
@@ -26,7 +29,7 @@ de uso del conjunto original (CDLA-Sharing-1.0).
 Requiere Python 3.10 o posterior. Desde la raíz:
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-train.txt
 python scripts/download_data.py
 python -m src.train --sample-percent 10 --epochs-ae 3 --epochs-cls 4
 python -m streamlit run app.py
@@ -35,6 +38,11 @@ python -m streamlit run app.py
 La aplicación lee `artifacts/results.json` y `artifacts/test_cases.json`, derivados
 del conjunto de prueba. También acepta un ID de remitente de las ventanas de prueba
 incluidas. No acepta perfiles ajenos al conjunto de prueba.
+
+Para desplegar en Streamlit Community Cloud, seleccione este repositorio, la rama
+`main` y `app.py` como archivo principal. Cloud instala `requirements.txt`, que
+contiene solo las dependencias de la interfaz. Configure la app como pública para
+que el evaluador abra el enlace sin cuenta; registre ese enlace en `mvp_url.txt`.
 
 Abra `notebooks/proyecto2.ipynb` y ejecute todas las celdas. El notebook comprueba
 si existe el CSV y lo descarga si hace falta. En Colab, sitúe primero el repositorio
