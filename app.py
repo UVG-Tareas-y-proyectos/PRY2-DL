@@ -78,7 +78,7 @@ data["Atención"] = np.asarray(case["attention"]).round(4)
 data["Error de reconstrucción"] = np.asarray(case["reconstruction_error"]).round(4)
 data = data.drop(columns=["transaction_label"])
 st.subheader("Secuencia de transacciones")
-st.dataframe(data, use_container_width=True, hide_index=True)
+st.dataframe(data, width="stretch", hide_index=True)
 
 fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.45), 2.4))
 heat = np.vstack([case["attention"], case["reconstruction_error"]]).astype(float)

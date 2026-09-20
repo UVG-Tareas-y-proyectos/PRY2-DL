@@ -43,8 +43,8 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(torch.allclose(first, second, atol=1e-6))
         classifier = AttentionClassifier(len(FEATURES), hidden=8)
         _, weights = classifier(x, length)
-        self.assertAlmostEqual(float(weights[0, 3:].sum()), 0.0)
-        self.assertAlmostEqual(float(weights[0, :3].sum()), 1.0, places=6)
+        self.assertAlmostEqual(float(weights[0, 3:].detach().sum()), 0.0)
+        self.assertAlmostEqual(float(weights[0, :3].detach().sum()), 1.0, places=6)
 
 
 if __name__ == "__main__":
