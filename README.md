@@ -39,10 +39,24 @@ La aplicación lee `artifacts/results.json` y `artifacts/test_cases.json`, deriv
 del conjunto de prueba. También acepta un ID de remitente de las ventanas de prueba
 incluidas. No acepta perfiles ajenos al conjunto de prueba.
 
-Para desplegar en Streamlit Community Cloud, seleccione este repositorio, la rama
-`main` y `app.py` como archivo principal. Cloud instala `requirements.txt`, que
-contiene solo las dependencias de la interfaz. Configure la app como pública para
-que el evaluador abra el enlace sin cuenta; registre ese enlace en `mvp_url.txt`.
+El [MVP público](https://pry2-dl-mvp-uvg-2026.streamlit.app/) se despliega desde
+[PRY2-DL-MVP](https://github.com/Ihan-Marroquin/PRY2-DL-MVP), una copia mínima
+de `app.py`, las dependencias de la interfaz y los resultados sintéticos. La
+organización del repositorio original deshabilita las deploy keys que Streamlit
+necesita para clonar repositorios privados. El enlace verificable también está en
+`mvp_url.txt`.
+
+## Entrega en Canvas
+
+Subir los tres archivos solicitados en el enunciado:
+
+1. `notebooks/proyecto2.ipynb`, notebook ejecutado.
+2. `report/reporte_ejecutivo.pdf`, reporte ejecutivo.
+3. `mvp_url.txt`, URL pública del MVP.
+
+Este repositorio conserva el código completo y respalda esos entregables. Como es
+privado, un evaluador que quiera revisar el historial de GitHub necesita acceso;
+los tres archivos anteriores se pueden subir directamente a Canvas.
 
 Abra `notebooks/proyecto2.ipynb` y ejecute todas las celdas. El notebook comprueba
 si existe el CSV y lo descarga si hace falta. En Colab, sitúe primero el repositorio
